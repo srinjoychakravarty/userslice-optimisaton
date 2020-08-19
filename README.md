@@ -19,6 +19,6 @@
 
 2. Run ABS scripts with
     ```sh
-    $ ./abs local_firstpass.abs
+    $ ./abs localpass.abs
     ```
 scripts.abs
