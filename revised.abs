@@ -41,9 +41,6 @@ active_users = active_keys.len()
 echo("Number of active keys: $active_users")
 echo("I ❤ Northeastern")
 
-CPU usage percentage
-
-
 for key in active_keys
 {
 	start_usr_dict = prev_seen_user_dict.key
