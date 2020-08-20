@@ -1,35 +1,42 @@
-last_seen_hash = {}
-users = []
-user_slices = `ls /sys/fs/cgroup/cpu/user.slice/` 
-usr_list = user_slices.lines()
-num_users = usr_list.len()
-base_path = "/sys/fs/cgroup/cpu/user.slice/"
-
-for i = 0; i < num_users; i = i + 1
+f get_active_user_slices() 
 {
-	usr_str = usr_list[i]
-	if ("user" in usr_str) 
+    echo("Populating active user slices...")
+	last_seen_hash = {}
+	users = []
+	user_slices = `ls /sys/fs/cgroup/cpu/user.slice/` 
+	usr_list = user_slices.lines()
+	num_users = usr_list.len()
+	base_path = "/sys/fs/cgroup/cpu/user.slice/"
+	for i = 0; i < num_users; i = i + 1
 	{
-		target = base_path+usr_str
-		current_path = cd(target)
-		temp_dict = {}
-		wall_clock_start_str = `date +%s%N`
-		temp_dict['wall_clock_start'] = wall_clock_start_str	 
-		last_seen_hash[usr_str]
-		cpu_clock_start_str = current_path && `cat */cpuacct.usage`
-		temp_dict['cpu_clock_start'] = cpu_clock_start_str  
-		last_seen_hash[usr_str] = temp_dict   
+		usr_str = usr_list[i]
+		if ("user" in usr_str) 
+		{
+			target = base_path+usr_str
+			current_path = cd(target)
+			temp_dict = {}
+			wall_clock_start_str = `date +%s%N`
+			temp_dict['wall_clock_start'] = wall_clock_start_str	 
+			last_seen_hash[usr_str]
+			cpu_clock_start_str = current_path && `cat */cpuacct.usage`
+			temp_dict['cpu_clock_start'] = cpu_clock_start_str  
+			last_seen_hash[usr_str] = temp_dict   
+		}
 	}
+	return last_seen_hash
 }
-echo(last_seen_hash)
-echo(`date +%s%N`)
-echo("Going to sleep...")
-sleep(1000)
-echo("Slept Well!")
-echo(`date +%s%N`)
-last_seen_keys = last_seen_hash.keys()
-last_key = last_seen_keys.pop()
-newly_detected_keys = ["user-50660.slice", "user-50935.slice", "hello"]
 
-active_keys = newly_detected_keys.filter(f(x){x in last_seen_keys})
-echo(active_keys)
+last_seen_user_dict = get_active_user_slices()
+echo(last_seen_user_dict)
+
+# echo(`date +%s%N`)
+# echo("Going to sleep...")
+# sleep(1000)
+# echo("Slept Well!")
+# echo(`date +%s%N`)
+# last_seen_keys = last_seen_hash.keys()
+# last_key = last_seen_keys.pop()
+# newly_detected_keys = ["user-50660.slice", "user-50935.slice", "hello"]
+
+# active_keys = newly_detected_keys.filter(f(x){x in last_seen_keys})
+# echo(active_keys)
