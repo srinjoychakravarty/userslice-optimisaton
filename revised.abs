@@ -50,10 +50,12 @@ for key in active_keys
 	
 	finish_usr_dict = new_seen_user_dict[key]
 	stop_wall_clock = finish_usr_dict['wall_clock']
-	stop_cpu_clock = finish_usr_dict['cpu_clock']
-	 
-	cpu_duration = stop_cpu_clock - stop_wall_clock
+	stop_cpu_clock = finish_usr_dict['cpu_clock'] 
+	cpu_duration = stop_cpu_clock - begin_cpu_clock
+	#echo("CPU Duration: $cpu_duration microseconds") 
+	
 	wall_clock_duration = stop_wall_clock - begin_wall_clock
+	#echo("Wall Clock Duration: $wall_clock_duration")
 	cpu_usage_pct = (cpu_duration / wall_clock_duration) * 100
 
 	echo("User: $key => CPU Usage: $cpu_usage_pct")
