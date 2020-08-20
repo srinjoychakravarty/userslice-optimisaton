@@ -18,8 +18,7 @@ f get_active_user_slices()
 			wall_clock = `date +%s%N`
 			temp_dict['wall_clock'] = int(wall_clock)	 
 			cpu_clock_str = `cat $target/cpuacct.usage`
-			echo("Current User Slice is: $usr_str")
-			echo("Current String to convert: $cpu_clock_str")
+
                         temp_dict['cpu_clock'] = int(cpu_clock_str)  
 			last_seen_hash[usr_str] = temp_dict   
 		}
@@ -52,8 +51,11 @@ for key in active_keys
 	finish_usr_dict = new_seen_user_dict[key]
 	stop_wall_clock = finish_usr_dict['wall_clock']
 	stop_cpu_clock = finish_usr_dict['cpu_clock']
+	 
+	cpu_duration = stop_cpu_clock - stop_wall_clock
+	wall_clock_duration = stop_wall_clock - begin_wall_clock
+	cpu_usage_pct = (cpu_duration / wall_clock_duration) * 100
 
-	cpu_usage = (($stop_cpu_clock - $begin_cpu_clock) / ($stop_wall_clock - $begin_wall_clock)) * 100
-	echo("User: $key => CPU Usage (%): $cpu_usage")
+	echo("User: $key => CPU Usage: $cpu_usage_pct")
 }
 echo("I ❤ Northeastern")
