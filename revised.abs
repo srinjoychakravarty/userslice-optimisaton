@@ -41,14 +41,19 @@ active_keys = new_usr_slices.filter(f(x){x in prev_usr_slices})
 active_users = active_keys.len()
 echo("Number of active keys: $active_users")
 
+users_cpu_usage = {}
+
 for key in active_keys
 {
 	start_usr_dict = prev_seen_user_dict[key]	
 	begin_wall_clock = start_usr_dict['wall_clock']
 	begin_cpu_clock = start_usr_dict['cpu_clock']
-		
+	
 	finish_usr_dict = new_seen_user_dict[key]
 	stop_wall_clock = finish_usr_dict['wall_clock']
 	stop_cpu_clock = finish_usr_dict['cpu_clock']
+
+	cpu_usage = (($stop_cpu_clock - $begin_cpu_clock) / ($stop_wall_clock - $begin_wall_clock)) * 100
+	echo("User: $key => CPU Usage (%): $cpu_usage")
 }
 echo("I ❤ Northeastern")
