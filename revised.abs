@@ -1,6 +1,5 @@
-f get_active_user_slices() 
+f get_live_usr_sessions() 
 {
-    	echo("Populating active user slices...")
 	last_seen_hash = {}
 	users = []
 	user_slices = `ls /sys/fs/cgroup/cpu/user.slice/` 
@@ -26,13 +25,15 @@ f get_active_user_slices()
 	return last_seen_hash
 }
 
-prev_seen_user_dict = get_active_user_slices()
+echo("Populating live HPC user sessions...")
+prev_seen_user_dict = get_live_usr_sessions()
 prev_usr_slices = prev_seen_user_dict.keys()
 last_seen_users = prev_usr_slices.len()
 echo("Number of last seen keys: $last_seen_users")
 echo("Sleeping for 60 seconds...")
-sleep(1000)
-new_seen_user_dict = get_active_user_slices()
+sleep(60000)
+echo("Repopulating live HPC user sessions...")
+new_seen_user_dict = get_live_usr_sessions()
 new_usr_slices = new_seen_user_dict.keys()
 newly_seen_users = new_usr_slices.len()
 echo("Number of new keys: $newly_seen_users")
@@ -56,8 +57,8 @@ for key in active_keys
 	
 	wall_clock_duration = stop_wall_clock - begin_wall_clock
 	#echo("Wall Clock Duration: $wall_clock_duration")
-	cpu_usage_pct = (cpu_duration / wall_clock_duration) * 100
+	cpu_usage_pct = ((cpu_duration / wall_clock_duration) * 100).round(3)
 
-	echo("User: $key => CPU Usage: $cpu_usage_pct")
+	echo("User Session: $key | CPU Usage: $cpu_usage_pct pct.")
 }
 echo("I ❤ Northeastern")
