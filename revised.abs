@@ -26,17 +26,14 @@ f get_active_user_slices()
 	return last_seen_hash
 }
 
-last_seen_user_dict = get_active_user_slices()
-echo(last_seen_user_dict)
-
-# echo(`date +%s%N`)
-# echo("Going to sleep...")
-# sleep(1000)
-# echo("Slept Well!")
-# echo(`date +%s%N`)
-# last_seen_keys = last_seen_hash.keys()
-# last_key = last_seen_keys.pop()
-# newly_detected_keys = ["user-50660.slice", "user-50935.slice", "hello"]
-
-# active_keys = newly_detected_keys.filter(f(x){x in last_seen_keys})
-# echo(active_keys)
+prev_seen_user_dict = get_active_user_slices()
+prev_usr_slices = prev_seen_user_dict.keys()
+echo("Number of last seen keys: ${prev_usr_slices.len()}")
+echo("Sleeping for 60 seconds...")
+sleep(1000)
+new_seen_user_dict = get_active_user_slices()
+new_usr_slices = new_seen_user_dict.keys()
+echo("Number of new keys: ${new_usr_slices.len()}")
+active_keys = new_usr_slices.filter(f(x){x in prev_usr_slices})
+echo("Number of active keys: ${active_keys.len()}")
+echo("I ❤ Northeastern")
