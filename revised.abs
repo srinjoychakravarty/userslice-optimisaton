@@ -1,0 +1,19 @@
+users = []
+user_slices = `ls /sys/fs/cgroup/cpu/user.slice/` 
+usr_list = user_slices.lines()
+num_users = usr_list.len()
+base_path = "/sys/fs/cgroup/cpu/user.slice/"
+
+for i = 0; i < num_users; i = i + 1
+{
+	usr_str = usr_list[i]
+	if ("user" in usr_str) 
+	{
+		target = base_path+usr_str
+		current_path = cd(target)   
+	}
+	else 
+	{
+    		echo("This is a process!")
+	}
+}
