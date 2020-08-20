@@ -12,8 +12,13 @@ for i = 0; i < num_users; i = i + 1
 	{
 		target = base_path+usr_str
 		current_path = cd(target)
-		cpu_start_str = current_path && `cat */cpuacct.usage`
-		last_seen_hash[usr_str] = cpu_start_str   
+		temp_dict = {}
+		wall_clock_start_str = `date +%s%N`
+		temp_dict['wall_clock_start'] = wall_clock_start_str	 
+		last_seen_hash[usr_str]
+		cpu_clock_start_str = current_path && `cat */cpuacct.usage`
+		temp_dict['cpu_clock_start'] = cpu_clock_start_str  
+		last_seen_hash[usr_str] = temp_dict   
 	}
 	else 
 	{
