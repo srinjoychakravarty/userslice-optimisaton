@@ -20,9 +20,16 @@ for i = 0; i < num_users; i = i + 1
 		temp_dict['cpu_clock_start'] = cpu_clock_start_str  
 		last_seen_hash[usr_str] = temp_dict   
 	}
-	else 
-	{
-    		#echo("This is a process!")
-	}
 }
 echo(last_seen_hash)
+echo(`date +%s%N`)
+echo("Going to sleep...")
+sleep(1000)
+echo("Slept Well!")
+echo(`date +%s%N`)
+last_seen_keys = last_seen_hash.keys()
+last_key = last_seen_keys.pop()
+newly_detected_keys = ["user-50660.slice", "user-50935.slice", "hello"]
+
+active_keys = newly_detected_keys.filter(f(x){x in last_seen_keys})
+echo(active_keys)
