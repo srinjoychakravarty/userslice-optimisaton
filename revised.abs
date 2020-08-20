@@ -31,7 +31,7 @@ prev_usr_slices = prev_seen_user_dict.keys()
 last_seen_users = prev_usr_slices.len()
 echo("Number of last seen keys: $last_seen_users")
 echo("Sleeping for 60 seconds...")
-sleep(60000)
+sleep(1000)
 new_seen_user_dict = get_active_user_slices()
 new_usr_slices = new_seen_user_dict.keys()
 newly_seen_users = new_usr_slices.len()
@@ -39,17 +39,16 @@ echo("Number of new keys: $newly_seen_users")
 active_keys = new_usr_slices.filter(f(x){x in prev_usr_slices})
 active_users = active_keys.len()
 echo("Number of active keys: $active_users")
-echo("I ❤ Northeastern")
 
 for key in active_keys
 {
-	start_usr_dict = prev_seen_user_dict.key
-	begin_wall_clock_str = start_usr_dict.wall_clock
-	begin_cpu_clock_str = start_usr_dict.cpu_clock
-	
-	finish_usr_dict = new_seen_user_dict.key
-	stop_wall_clock_str = finish_usr_dict.wall_clock
-	stop_cpu_clock_str = finish_usr_dict.cpu_clock
-	stop_wall_clock_str = finish_usr_dict.wall_clock
-	echo("Begin Wall Clock: $begin_wall_clock_str\nBegin CPU Clock: $begin_cpu_clock_str\nStop Wall Clock: $\nStop CPU Clock: $stop_wall_clock_str")
+	start_usr_dict = prev_seen_user_dict[key]	
+	begin_wall_clock = int(start_usr_dict['wall_clock'])
+	#begin_cpu_clock = int(start_usr_dict['cpu_clock'])
+		
+	finish_usr_dict = new_seen_user_dict[key]
+	stop_wall_clock = int(finish_usr_dict['wall_clock'])
+	#stop_cpu_clock = int(finish_usr_dict['cpu_clock'])
 }
+
+echo("I ❤ Northeastern")
