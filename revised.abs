@@ -1,6 +1,6 @@
 f get_active_user_slices() 
 {
-    echo("Populating active user slices...")
+    	echo("Populating active user slices...")
 	last_seen_hash = {}
 	users = []
 	user_slices = `ls /sys/fs/cgroup/cpu/user.slice/` 
@@ -15,11 +15,12 @@ f get_active_user_slices()
 			target = base_path+usr_str
 			current_path = cd(target)
 			temp_dict = {}
-			wall_clock_str = `date +%s%N`
-			temp_dict['wall_clock'] = wall_clock_str	 
-			last_seen_hash[usr_str]
-			cpu_clock_str = current_path && `cat */cpuacct.usage`
-			temp_dict['cpu_clock'] = cpu_clock_str  
+			wall_clock = `date +%s%N`
+			temp_dict['wall_clock'] = int(wall_clock)	 
+			cpu_clock_str = `cat $target/cpuacct.usage`
+			echo("Current User Slice is: $usr_str")
+			echo("Current String to convert: $cpu_clock_str")
+                        temp_dict['cpu_clock'] = int(cpu_clock_str)  
 			last_seen_hash[usr_str] = temp_dict   
 		}
 	}
@@ -43,12 +44,11 @@ echo("Number of active keys: $active_users")
 for key in active_keys
 {
 	start_usr_dict = prev_seen_user_dict[key]	
-	begin_wall_clock = int(start_usr_dict['wall_clock'])
-	#begin_cpu_clock = int(start_usr_dict['cpu_clock'])
+	begin_wall_clock = start_usr_dict['wall_clock']
+	begin_cpu_clock = start_usr_dict['cpu_clock']
 		
 	finish_usr_dict = new_seen_user_dict[key]
-	stop_wall_clock = int(finish_usr_dict['wall_clock'])
-	#stop_cpu_clock = int(finish_usr_dict['cpu_clock'])
+	stop_wall_clock = finish_usr_dict['wall_clock']
+	stop_cpu_clock = finish_usr_dict['cpu_clock']
 }
-
 echo("I ❤ Northeastern")
