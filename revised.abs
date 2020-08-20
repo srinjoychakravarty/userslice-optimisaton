@@ -15,11 +15,11 @@ f get_active_user_slices()
 			target = base_path+usr_str
 			current_path = cd(target)
 			temp_dict = {}
-			wall_clock_start_str = `date +%s%N`
-			temp_dict['wall_clock_start'] = wall_clock_start_str	 
+			wall_clock_str = `date +%s%N`
+			temp_dict['wall_clock'] = wall_clock_str	 
 			last_seen_hash[usr_str]
-			cpu_clock_start_str = current_path && `cat */cpuacct.usage`
-			temp_dict['cpu_clock_start'] = cpu_clock_start_str  
+			cpu_clock_str = current_path && `cat */cpuacct.usage`
+			temp_dict['cpu_clock'] = cpu_clock_str  
 			last_seen_hash[usr_str] = temp_dict   
 		}
 	}
@@ -40,3 +40,19 @@ active_keys = new_usr_slices.filter(f(x){x in prev_usr_slices})
 active_users = active_keys.len()
 echo("Number of active keys: $active_users")
 echo("I ❤ Northeastern")
+
+CPU usage percentage
+
+
+for key in active_keys
+{
+	start_usr_dict = prev_seen_user_dict.key
+	begin_wall_clock_str = start_usr_dict.wall_clock
+	begin_cpu_clock_str = start_usr_dict.cpu_clock
+	
+	finish_usr_dict = new_seen_user_dict.key
+	stop_wall_clock_str = finish_usr_dict.wall_clock
+	stop_cpu_clock_str = finish_usr_dict.cpu_clock
+	stop_wall_clock_str = finish_usr_dict.wall_clock
+	echo("Begin Wall Clock: $begin_wall_clock_str\nBegin CPU Clock: $begin_cpu_clock_str\nStop Wall Clock: $\nStop CPU Clock: $stop_wall_clock_str")
+}
