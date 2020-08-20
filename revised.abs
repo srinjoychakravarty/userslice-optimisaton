@@ -1,3 +1,4 @@
+last_seen_hash = {}
 users = []
 user_slices = `ls /sys/fs/cgroup/cpu/user.slice/` 
 usr_list = user_slices.lines()
@@ -10,10 +11,13 @@ for i = 0; i < num_users; i = i + 1
 	if ("user" in usr_str) 
 	{
 		target = base_path+usr_str
-		current_path = cd(target)   
+		current_path = cd(target)
+		cpu_start_str = current_path && `cat */cpuacct.usage`
+		last_seen_hash[usr_str] = cpu_start_str   
 	}
 	else 
 	{
-    		echo("This is a process!")
+    		#echo("This is a process!")
 	}
 }
+echo(last_seen_hash)
