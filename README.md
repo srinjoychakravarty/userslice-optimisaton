@@ -21,5 +21,5 @@
     ```sh
     $ ./abs userslice-optimisaton/revised.abs 4 10
     ```
-| Note! :warning: The **./abs** here is the _executable_ used to run the **revised.abs** script, which is placed one level below inside the **userslice-optimisaton** github repo folder. The **4** is the **--first_delay** flag and the **10** is the **--second_delay** flag chosen as examples. |
-| --- |
+    
+**Note** :warning: The **./abs** here is the _executable_ used to run the **revised.abs** script, which is placed one level below inside the **userslice-optimisaton** github repo folder. The **4** is the **--first_delay** flag and the **10** is the **--second_delay** flag chosen as examples
