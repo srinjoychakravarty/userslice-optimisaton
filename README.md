@@ -17,8 +17,9 @@
     $ bash <(curl https://www.abs-lang.org/installer.sh)
     ```
 
-2. Run ABS scripts with
+2. Run ABS scripts with --first_delay flag to indicate the duration at which to measure users with over 30% cpu usage and --second delay flag to indicate the duration ater which to send offending users a friendly warning
     ```sh
-    $ ./abs localpass.abs
+    $ ./abs userslice-optimisaton/revised.abs 4 10
     ```
-scripts.abs
+| Note! :warning: The **./abs** here is the _executable_ used to run the **revised.abs** script, which is placed one level below inside the **userslice-optimisaton** github repo folder. The **4** is the **--first_delay** flag and the **10** is the **--second_delay** flag chosen as examples. |
+| --- |
