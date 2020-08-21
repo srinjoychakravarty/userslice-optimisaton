@@ -31,7 +31,7 @@ prev_usr_slices = prev_seen_user_dict.keys()
 last_seen_users = prev_usr_slices.len()
 echo("Number of last seen keys: $last_seen_users")
 echo("Sleeping for 60 seconds...")
-sleep(60000)
+sleep(2000)
 echo("Repopulating live HPC user sessions...")
 new_seen_user_dict = get_live_usr_sessions()
 new_usr_slices = new_seen_user_dict.keys()
@@ -39,9 +39,9 @@ newly_seen_users = new_usr_slices.len()
 echo("Number of new keys: $newly_seen_users")
 active_keys = new_usr_slices.filter(f(x){x in prev_usr_slices})
 active_users = active_keys.len()
-echo("Number of active keys: $active_users")
 
 users_cpu_usage = {}
+flagged_users = {}
 
 for key in active_keys
 {
@@ -52,13 +52,22 @@ for key in active_keys
 	finish_usr_dict = new_seen_user_dict[key]
 	stop_wall_clock = finish_usr_dict['wall_clock']
 	stop_cpu_clock = finish_usr_dict['cpu_clock'] 
-	cpu_duration = stop_cpu_clock - begin_cpu_clock
-	#echo("CPU Duration: $cpu_duration microseconds") 
+	cpu_duration = stop_cpu_clock - begin_cpu_clock 
 	
 	wall_clock_duration = stop_wall_clock - begin_wall_clock
-	#echo("Wall Clock Duration: $wall_clock_duration")
 	cpu_usage_pct = ((cpu_duration / wall_clock_duration) * 100).round(3)
 
-	echo("User Session: $key | CPU Usage: $cpu_usage_pct pct.")
+	#echo("User Session: $key | CPU Usage: $cpu_usage_pct pct.")
+
+	if (cpu_usage_pct > 0)
+	{
+		tmp_usr_dict = {}
+		tmp_usr_dict['1_min_warning'] = true
+		tmp_usr_dict['current_cpu_usage'] = cpu_usage_pct
+		flagged_users[key] = tmp_usr_dict
+	}
 }
+
+echo(flagged_users)
+
 echo("I ❤ Northeastern")
