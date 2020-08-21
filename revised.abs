@@ -41,7 +41,7 @@ active_keys = new_usr_slices.filter(f(x){x in prev_usr_slices})
 active_users = active_keys.len()
 
 users_cpu_usage = {}
-flagged_users = {}
+flagged_users_dict = {}
 
 for key in active_keys
 {
@@ -64,10 +64,23 @@ for key in active_keys
 		tmp_usr_dict = {}
 		tmp_usr_dict['1_min_warning'] = true
 		tmp_usr_dict['current_cpu_usage'] = cpu_usage_pct
-		flagged_users[key] = tmp_usr_dict
+		flagged_users_dict[key] = tmp_usr_dict
 	}
 }
 
-echo(flagged_users)
+echo("Sleeping for 60 seconds...")
+sleep(3000)
 
+flagged_users = flagged_users_dict.keys()
+echo(flagged_users)
+flag1 = arg(0)
+flag2 = arg(1)
+flag3 = arg(2)
+flag_list = args()
+num_flags = flag_list.len()
+echo("Argument 1: $flag1")
+echo("Argument 2: $flag2")
+echo("Argument 3: $flag3")
+echo("List of Flags: $flag_list")
+echo("Number of Flags: $num_flags")
 echo("I ❤ Northeastern")
