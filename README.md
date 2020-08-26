@@ -17,9 +17,13 @@
     $ bash <(curl https://www.abs-lang.org/installer.sh)
     ```
 
-2. Run ABS scripts with --first_delay flag to indicate the duration at which to measure users with over 30% cpu usage and --second delay flag to indicate the duration ater which to send offending users a friendly warning
+2. Run ABS scripts with flags
     ```sh
-    $ ./abs userslice-optimisaton/revised.abs 60 3
+    $ ./abs userslice-optimisaton/revised.abs 15 3 0.006
     ```
     
-> :warning: **Note**: The **$ ./abs** here is the _executable_ used to run the **revised.abs** script. The script itsef is placed one level below, in the **userslice-optimisaton** _git_ folder. The **60** is the _--first_delay_ flag and the **3** is the _--second_delay_ flag chosen as examples
+> :warning: **Note**: The **$ ./abs** here is the _executable_ used to run the **revised.abs** script. The script itsef is placed one level below, in the **userslice-optimisaton** _git_ folder. **15** is the _--loop_cadence flag, **3** is the _--email_threshold flag, and **0.006** is the _--overusage_parameter flag
+
+* **Loop Cadence:** The delay between each run of checking cpu usages of active discovery users
+* **Email Threshold:** The number of consecutive strikes against a user running above the allow cpu usage threshold
+* **Overusage Parameter:** The percentage of cpu usage taken up by a user's processes on a given login node
