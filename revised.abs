@@ -1,6 +1,13 @@
-f get_live_usr_sessions() 
+echo("What loop cadence would you like?")
+loop_cadence = int(stdin())
+echo("What CPU percentage is considered overusage?")
+overusage_parameter = (stdin()).number()
+echo("After how many consecutive strikes do you want to email the user?")
+email_threshold = int(stdin())
+
+f get_active_session_dicts()
 {
-	last_seen_hash = {}
+    active_session_dict = {}
 	users = []
 	user_slices = `ls /sys/fs/cgroup/cpu/user.slice/` 
 	usr_list = user_slices.lines()
@@ -17,63 +24,79 @@ f get_live_usr_sessions()
 			wall_clock = `date +%s%N`
 			temp_dict['wall_clock'] = int(wall_clock)	 
 			cpu_clock_str = `cat $target/cpuacct.usage`
-
-                        temp_dict['cpu_clock'] = int(cpu_clock_str)  
-			last_seen_hash[usr_str] = temp_dict   
+            temp_dict['cpu_clock'] = int(cpu_clock_str)  
+			active_session_dict[usr_str] = temp_dict   
 		}
 	}
-	return last_seen_hash
+	return active_session_dict
 }
+# loop_cadence = int(arg(2))
+# email_threshold = int(arg(3))
+# overusage_parameter = (arg(4)).number()
 
-echo("Populating live HPC user sessions...")
-prev_seen_user_dict = get_live_usr_sessions()
-prev_usr_slices = prev_seen_user_dict.keys()
-last_seen_users = prev_usr_slices.len()
-echo("Number of last seen keys: $last_seen_users")
-first_delay = int(arg(2))
-echo("Sleeping for $first_delay seconds...")
-sleep(first_delay*1000)
-echo("Repopulating live HPC user sessions...")
-new_seen_user_dict = get_live_usr_sessions()
-new_usr_slices = new_seen_user_dict.keys()
-newly_seen_users = new_usr_slices.len()
-echo("Number of new keys: $newly_seen_users")
-active_keys = new_usr_slices.filter(f(x){x in prev_usr_slices})
-active_users = active_keys.len()
+echo("Loop Cadence: $loop_cadence")
+echo("Email Threshold: $email_threshold")
+echo("Overusage Parameter: $overusage_parameter")
 
-users_cpu_usage = {}
-flagged_users_dict = {}
-
-for key in active_keys
+loop = true
+prev_round_dict = {}
+dict_to_echo = {}
+while loop == true
 {
-	start_usr_dict = prev_seen_user_dict[key]	
-	begin_wall_clock = start_usr_dict['wall_clock']
-	begin_cpu_clock = start_usr_dict['cpu_clock']
-	
-	finish_usr_dict = new_seen_user_dict[key]
-	stop_wall_clock = finish_usr_dict['wall_clock']
-	stop_cpu_clock = finish_usr_dict['cpu_clock'] 
-	cpu_duration = stop_cpu_clock - begin_cpu_clock 
-	
-	wall_clock_duration = stop_wall_clock - begin_wall_clock
-	cpu_usage_pct = ((cpu_duration / wall_clock_duration) * 100).round(3)
-
-	#echo("User Session: $key | CPU Usage: $cpu_usage_pct pct.")
-
-	if (cpu_usage_pct > 0)
-	{
-		tmp_usr_dict = {}
-		tmp_usr_dict['1_min_warning'] = true
-		tmp_usr_dict['current_cpu_usage'] = cpu_usage_pct
-		flagged_users_dict[key] = tmp_usr_dict
-	}
+    active_session_dict = get_active_session_dicts()
+    active_keys = active_session_dict.keys()                        
+    num_active_keys = active_keys.len()
+    echo("Number of Active Keys this round: $num_active_keys")
+    if num_active_keys > 0                                               
+    {
+        old_keys = (prev_round_dict.keys()).diff(active_keys)
+        num_old_keys = old_keys.len()
+        echo("Keys expired this round: $num_old_keys")
+        if (num_old_keys > 0)                                            
+        {
+            for old_key in old_keys                                     
+            {
+                active_session_dict.pop(old_key)
+            }
+        }
+        remaining_keys = active_session_dict.keys()                          
+        for key in remaining_keys                                           
+        {
+            echo("Entered Key: $key")
+            if (prev_round_dict[key] == null)
+            {
+                begin_wall_clock = 0
+                begin_cpu_clock = 0
+                consecutive_overusage = 0
+            }
+            else
+            {
+                begin_wall_clock = prev_round_dict[key]['wall_clock']
+                begin_cpu_clock = prev_round_dict[key]['cpu_clock']
+                consecutive_overusage = prev_round_dict[key]['consecutive_overusage']
+            }
+            stop_wall_clock = active_session_dict[key]['wall_clock']
+            stop_cpu_clock = active_session_dict[key]['cpu_clock']
+            cpu_duration = stop_cpu_clock - begin_cpu_clock 
+            wall_clock_duration = stop_wall_clock - begin_wall_clock
+            cpu_usage_pct = ((cpu_duration / wall_clock_duration) * 100).round(3)
+            echo("CPU Usage Percent: $cpu_usage_pct") 
+            if (cpu_usage_pct > overusage_parameter)
+            {
+                echo("Entered Overusage Parameter with percent: $cpu_usage_pct")
+                prev_round_dict[key] = {"wall_clock": stop_wall_clock, "cpu_clock": stop_cpu_clock, "cpu_usage": cpu_usage_pct, "consecutive_overusage": consecutive_overusage + 1}
+            }
+            else
+            {
+                prev_round_dict[key] = {"wall_clock": stop_wall_clock, "cpu_clock": stop_cpu_clock, "cpu_usage": cpu_usage_pct, "consecutive_overusage": 0}
+            }
+            dict_to_echo[key] = {"current_cpu_usage": cpu_usage_pct, "consecutive_overusage": consecutive_overusage}
+        }
+    }
+    echo("Active Users on HPC this round...")
+    echo(dict_to_echo)
+    #echo(dict_to_echo.items())
+    echo("Sleeping for $loop_cadence seconds...")
+    sleep(loop_cadence*1000)
+    echo("I ❤ Northeastern")
 }
-
-second_delay = int(arg(3))
-echo("Sleeping for $second_delay seconds...")
-sleep(second_delay*1000)
-
-echo(flagged_users_dict)
-flagged_users = flagged_users_dict.keys()
-
-echo("I ❤ Northeastern")
