@@ -19,11 +19,21 @@
 
 2. Run ABS scripts with flags
     ```sh
-    $ ./abs userslice-optimisaton/revised.abs 15 3 0.006
+    $ ./abs userslice-optimisaton/revised.abs 4 9 0.008
     ```
     
-> :warning: **Note**: The **$ ./abs** here is the _executable_ used to run the **revised.abs** script. The script itsef is placed one level below, in the **userslice-optimisaton** _git_ folder. **15** is the _--loop_cadence flag, **3** is the _--email_threshold flag, and **0.006** is the _--overusage_parameter flag
+> :warning: **Note**: The **$ ./abs** here is the _executable_ used to run the **revised.abs** script. The script itsef is placed one level below, in the **userslice-optimisaton** _git_ folder. 
 
-* **Loop Cadence:** The delay between each run of checking cpu usages of active discovery users
-* **Email Threshold:** The number of consecutive strikes against a user running above the allow cpu usage threshold
-* **Overusage Parameter:** The percentage of cpu usage taken up by a user's processes on a given login node
+#### Sample Flags (explained)
+
+1. **4** is the **--loop_cadence** flag _i.e. loop over active discovery user slices every 4 seconds_
+> **Loop Cadence:** The delay between each run of checking cpu usages of active discovery users
+
+2. **9** is the **--email_threshold** flag _i.e. email infringing users a friendly warning after 9 consecutive iterations of cpu overusage_
+> **Email Threshold:** The number of consecutive strikes against a user running above the allow cpu usage threshold
+
+3. **0.008** is the **--overusage_parameter** flag _i.e. the threshold set by the system administrator as acceptable single-user cpu utilization of a login node_
+> **Overusage Parameter:** The percentage of cpu usage taken up by a user's processes on a given login node
+
+
+
