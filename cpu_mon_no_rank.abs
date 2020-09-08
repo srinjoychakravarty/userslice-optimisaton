@@ -24,21 +24,6 @@ f get_active_session_dicts()
 	return active_session_dict
 }
 
-f return_rank(test_list, search_term) 
-{
-    res_list = [] 
-    for i = 0; i < test_list.len(); i = i + 1 
-    {
-        if test_list[i] == search_term 
-        {
-            res_list += [i] 
-        }
-    }
-    
-    min_rank = res_list.min()
-    return min_rank.int()
-}
-
 loop_cadence = int(arg(2))
 email_threshold = int(arg(3))
 overusage_parameter = (arg(4)).number()
@@ -50,8 +35,6 @@ echo("Overusage Parameter: $overusage_parameter")
 loop = true
 prev_round_dict = {}
 dict_to_echo = {}
-cpu_usage_list = []
-
 while loop == true
 {
     active_session_dict = get_active_session_dicts()
@@ -62,20 +45,18 @@ while loop == true
     {
         old_keys = (prev_round_dict.keys()).diff(active_keys)
         num_old_keys = old_keys.len()
-
+        echo("Keys expired this round: $num_old_keys")
         if (num_old_keys > 0)                                            
         {
-	        echo("Keys expired this round: $num_old_keys")
             for old_key in old_keys                                     
             {
-                echo("Popping keys...")
-	            active_session_dict.pop(old_key)
+                active_session_dict.pop(old_key)
             }
         }
         remaining_keys = active_session_dict.keys()                          
         for key in remaining_keys                                           
         {
-
+            echo("Entered Key: $key")
             if (prev_round_dict[key] == null)
             {
                 begin_wall_clock = 0
@@ -93,9 +74,10 @@ while loop == true
             cpu_duration = stop_cpu_clock - begin_cpu_clock 
             wall_clock_duration = stop_wall_clock - begin_wall_clock
             cpu_usage_pct = ((cpu_duration / wall_clock_duration) * 100).round(3)
-
+            echo("CPU Usage Percent: $cpu_usage_pct") 
             if (cpu_usage_pct > overusage_parameter)
             {
+                echo("Entered Overusage Parameter with percent: $cpu_usage_pct")
                 prev_round_dict[key] = {"wall_clock": stop_wall_clock, "cpu_clock": stop_cpu_clock, "cpu_usage": cpu_usage_pct, "consecutive_overusage": consecutive_overusage + 1}
             }
             else
@@ -103,29 +85,13 @@ while loop == true
                 prev_round_dict[key] = {"wall_clock": stop_wall_clock, "cpu_clock": stop_cpu_clock, "cpu_usage": cpu_usage_pct, "consecutive_overusage": 0}
             }
             dict_to_echo[key] = {"current_cpu_usage": cpu_usage_pct, "consecutive_overusage": consecutive_overusage}
-            cpu_usage_list += [cpu_usage_pct]
         }
     }
-
-    current_dict_values = dict_to_echo.values().len()
-
+    echo("Active Users on HPC this round...")
+    num_users = dict_to_echo.keys().len()
+    echo("Total Active Users: $num_users")
+    echo(dict_to_echo)
     echo("Sleeping for $loop_cadence seconds...")
     sleep(loop_cadence*1000)
-
-    sorted_cpu_usage_list = cpu_usage_list.sort().reverse()
-
-    user_dict_ranking = {}
-    
-    for k, v in dict_to_echo
-    {
-        search_term = v["current_cpu_usage"]   
-        rank = return_rank(sorted_cpu_usage_list, search_term)
-        user_dict_ranking[k] = {"ranking":  rank, "cpu_usage":  search_term}
-    }
-
-    echo(user_dict_ranking)
-
-    cpu_usage_list = []
-    sorted_cpu_usage_list = []
     echo("I ❤ Northeastern")
 }
