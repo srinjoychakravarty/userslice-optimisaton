@@ -16,10 +16,19 @@
     ```sh
     $ bash <(curl https://www.abs-lang.org/installer.sh)
     ```
-
-2. Run ABS scripts with flags
+2. Submit the legacy slurm job by triggering the bash script
     ```sh
-    $ ./abs userslice-optimisaton/revised.abs 4 9 0.008
+    $ ./cpu_mon_no_rank.sh
+    ```
+
+3. This inherently submits the following job
+    ```sh
+    $ sbatch cpu_mon_no_rank.sbatch
+    ```
+    
+4. The batch command intrinsically runs ABS scripts with flags
+    ```sh
+    $ ./abs userslice-optimisaton/cpu_mon_no_rank.abs 4 9 0.008
     ```
     
 > :warning: **Note**: The **$ ./abs** here is the _executable_ used to run the **revised.abs** script. The script itsef is placed one level below, in the **userslice-optimisaton** _git_ folder. 
