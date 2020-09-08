@@ -1,6 +1,5 @@
 #!/bin/bash
 
-sbatch cpu_mon.sbatch
 sbatch cpu_mon_no_rank.sbatch
 echo Submitted CPU Usage Monitoring Script...
 
